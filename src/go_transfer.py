@@ -154,7 +154,9 @@ def game_go_speed(target_plays: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
 
 def player_table(wr: pd.DataFrame, play: pd.DataFrame, tracks: pd.DataFrame,
                  combine_speed: pd.DataFrame) -> pd.DataFrame:
-    joined = play.merge(tracks, on=["game_id", "play_id", "nfl_id"], how="left", validate="one_to_one")
+    # Evaluate both outcomes on routes with a valid tracking window so that
+    # speed and separation refer to the same plays for each receiver.
+    joined = play.merge(tracks, on=["game_id", "play_id", "nfl_id"], how="inner", validate="one_to_one")
     player = joined.groupby("nfl_id").agg(
         tracked_go_routes=("game_go_speed_p90", "count"),
         mean_nfl_go_speed=("game_go_speed_p90", "mean"),

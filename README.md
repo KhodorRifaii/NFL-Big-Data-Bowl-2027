@@ -4,7 +4,7 @@ This project studies whether sensor speed on the Combine `GO_ROUTE_RIGHT` drill 
 
 ## Main result
 
-For 54 eligible wide receivers, adding the Combine sensor measure lowered pooled draft-class-held-out error for rookie go-route speed from **0.408 to 0.358 yd/s**. The approximate paired interval for the error change includes zero, so the gain remains uncertain. The same feature barely changed separation error (**0.433 to 0.431 yd**). The possible use is a post-draft movement baseline for video review, not a validated player ranking.
+For 54 eligible wide receivers, adding the Combine sensor measure lowered pooled draft-class-held-out error for rookie go-route speed from **0.408 to 0.358 yd/s**. The approximate paired interval for the error change includes zero, so the gain remains uncertain. The same feature barely changed separation error (**0.436 to 0.434 yd**). The possible use is a post-draft movement baseline for video review, not a validated player ranking.
 
 ![Combine go-route analysis](figures/go_route_transfer.png)
 
