@@ -1,28 +1,29 @@
-# NFL Big Data Bowl 2027: Combine movement and receiver routes
+# NFL Big Data Bowl 2027: Combine go-drill speed to rookie NFL routes
 
-This project examines whether wide receiver movement traits measured in route style Combine drills carry over to matched NFL routes. The work uses the Kaggle [NFL Big Data Bowl 2027](https://www.kaggle.com/competitions/nfl-big-data-bowl-2027) data and processes game tracking without extracting all large tracking CSVs.
+This project studies whether sensor speed on the Combine `GO_ROUTE_RIGHT` drill adds useful information about rookie NFL `GO` route speed and separation beyond official 40-yard time and draft position. It uses both Combine and NFL game tracking from the [NFL Big Data Bowl 2027](https://www.kaggle.com/competitions/nfl-big-data-bowl-2027).
 
-## Main conclusion
+## Main result
 
-The available sample does not establish a reliable relationship between Combine movement and NFL route outcomes. A promising unadjusted relationship between speed out drill path efficiency and NFL out route separation is sensitive to how many NFL route observations are required per player. Combine go route speed has a modest raw relationship with go route game speed, but its adjusted confidence interval includes zero. These are exploratory associations, not a validated scouting tool or causal results.
+For 54 eligible wide receivers, adding the Combine sensor measure lowered pooled draft-class-held-out error for rookie go-route speed from **0.408 to 0.358 yd/s**. The approximate paired interval for the error change includes zero, so the gain remains uncertain. The same feature barely changed separation error (**0.433 to 0.431 yd**). The possible use is a post-draft movement baseline for video review, not a validated player ranking.
 
-## Run it
+![Combine go-route analysis](figures/go_route_transfer.png)
 
-Install dependencies from `requirements.txt`, then run:
+## Start with the notebook
+
+[notebooks/go_route_transfer.ipynb](notebooks/go_route_transfer.ipynb) is the main Jupyter analysis and contains the methods, code, output tables, and figure. Run it with the competition data attached in Kaggle, or locally in Jupyter with the CSVs in `data/raw/`. The notebook searches `/kaggle/input` automatically. Locally, it reads game tracking directly from the downloaded ZIP at `~/Downloads/nfl-big-data-bowl-2027.zip` when the large CSVs have not been extracted. Set `BDB_DATA_DIR` and `BDB_ARCHIVE` to use other locations.
+
+To run the same focused analysis from a terminal after installing `requirements.txt`:
 
 ```bash
-python src/analyze_wr.py
+python src/go_transfer.py
 ```
 
-The script looks for the competition CSVs in `data/raw/`. You can also set `BDB_DATA_DIR` to the directory containing them, or put the original archive at `~/Downloads/nfl-big-data-bowl-2027.zip`. On Kaggle, it searches `/kaggle/input` automatically. Tracking rows are streamed from the ZIP when full season tracking CSVs are not already present in the data directory.
+The earlier [exploratory notebook](notebooks/nfl_big_data_bowl_2027.ipynb) and `src/analyze_wr.py` show the broader route-family search that motivated the focused study. Its candidate associations are exploratory and should not be treated as independently validated findings.
 
-## Deliverables
+## Submission files
 
-- `notebooks/nfl_big_data_bowl_2027.ipynb`: self-contained notebook version, designed to run with competition data attached on Kaggle.
-- `writeup.md`: short project write-up and findings.
-- `outputs/summary_findings.png`: figure summarizing selected exploratory relationships.
-- `outputs/route_associations.csv`, `outputs/movement_associations.csv`: association tables with uncertainty and multiple comparison summaries.
-- `outputs/sensitivity_associations.csv`: checks using higher route-count thresholds and earlier draft cohorts.
-- `outputs/analysis_metadata.json`: coverage and methods audit.
+- [writeup.md](writeup.md): competition-style narrative, below 2,000 words with one figure.
+- [figures/go_route_transfer.png](figures/go_route_transfer.png): summary figure for the write-up media gallery.
+- `outputs/rookie_go_cv_summary.csv`, `outputs/rookie_go_coverage_check.csv`, `outputs/rookie_go_weekly_translation.csv`, and `outputs/rookie_go_audit.json`: generated results, weekly pilot, and coverage audit.
 
-Data files and generated analysis tables are excluded from version control. Do not publish or redistribute the competition data. To submit to Kaggle, upload the notebook and write-up through the competition page and follow its current rules and deadlines. Completing this analysis locally does not create a Kaggle submission or award competition points or medals.
+Raw competition CSVs, the downloaded ZIP, and player-level generated tables are excluded from Git. To enter the competition, attach a **public Kaggle notebook** to the Kaggle write-up, add the figure to its media gallery, and submit through the competition page. Publishing this repository alone is not a Kaggle submission. This competition does not award Kaggle competition points or medals.

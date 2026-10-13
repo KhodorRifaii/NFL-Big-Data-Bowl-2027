@@ -1,35 +1,41 @@
-# Do Combine route movements carry over to NFL receiver routes?
+# Does Combine go-drill speed carry over to NFL routes?
 
-## Summary
+*A rookie route-speed baseline, and a limit on what it can tell us about separation*
 
-We compared movement recorded during wide receiver Combine route drills with movement and separation on similarly named NFL routes. The data provide a useful exploratory look, but they do not support a reliable claim that Combine movement predicts NFL route performance. One raw association between speed out drill path efficiency and NFL out route separation weakened substantially when players needed more route observations. A raw association between go drill speed and NFL go route speed remained visible, but its adjusted uncertainty includes no relationship. The findings should be treated as leads for further study, not as a scouting rule.
+## The football question
 
-## Question and approach
+The 40-yard dash measures straight-line speed. The Combine go-route drill measures speed while a receiver runs a football route. If the added tracking information matters, it should first help estimate how fast that receiver runs NFL go routes. Whether he gets open is a separate question: separation also depends on coverage, route design, quarterback timing, and other players.
 
-The NFL Big Data Bowl 2027 asks participants to connect Combine sensor tracking with regular season performance. We focused on drafted wide receivers and paired six route families with NFL route labels, combining the two speed-out drill variants into one group. The primary player outcome was mean separation at pass release on the matching route family. We also compared movement speed measured during Combine drills with speed during matched NFL routes.
+We tested both steps for wide receivers in the [NFL Big Data Bowl 2027](https://www.kaggle.com/competitions/nfl-big-data-bowl-2027). The result is a possible **movement baseline**, with no meaningful evidence that this one sensor measure predicts separation.
 
-Combine movement metrics were summarized across available attempts. For NFL movement, we used player tracking from ball snap through pass forward, summarized within each player-play, then aggregated by player and route. Player associations required at least 10 NFL observations on a route. Adjusted linear models controlled for official 40 yard time, overall draft pick, and draft class; 95% confidence intervals use HC3 robust standard errors. We report Spearman rank correlations and Benjamini-Hochberg q values to show the effect of examining many combinations.
+## Data and method
 
-The analysis covered 106 Combine wide receivers. 82 had at least one eligible route record after restricting to the selected regular seasons and rows with measured separation. It used 2023, 2024, and 2025 regular seasons, limited to a player's rookie year and the following season when available. The 2026 partial season was excluded. We matched Combine drill names to NFL routes by route family; this is an approximate mapping, especially where a drill or route can have different geometry.
+We linked 10 Hz Combine sensor tracking from the `GO_ROUTE_RIGHT` drill to regular-season NFL tracking on `GO` routes in each player's **rookie season**. Of 106 wide receivers with Combine records, 54 had the drill and at least 10 measured rookie go routes plus 10 routes with recorded separation. The sample includes 22 players drafted in 2023, 18 in 2024, and 14 in 2025.
 
-## Findings
+For each Combine attempt, we measured the 90th percentile sensor speed and took the median across attempts. For each NFL go route, we measured the receiver's 90th percentile speed from ball snap to pass release. We then averaged each player's measured route speed and separation at pass release. All speeds are in yards per second; separation is in yards.
 
-**Speed out path efficiency and separation:** Among 56 receivers, greater path efficiency on the Combine speed out drill had a positive rank association with mean NFL out route separation (Spearman rho = 0.36, unadjusted p = 0.0068). In the adjusted model, a one standard deviation increase in efficiency corresponded to 0.21 yards greater separation (95% CI 0.05 to 0.37). However, when we required at least 25 NFL out route observations per player, the sample fell to 34 and the relationship weakened (rho = 0.13, p = 0.48; adjusted estimate 0.06 yards, 95% CI -0.08 to 0.20). The all-comparison adjusted q value was 0.33. This instability means the apparent relationship is not robust evidence.
+We compared two simple linear models. The benchmark used official 40-yard time and overall draft pick. The second model added Combine go-drill speed. We held out one entire draft class at a time, fit on the other two, and predicted the omitted class. Training-class data alone determined the 40-time imputation and feature scaling. Four players lacked a 40 time, and five lacked a draft pick; the latter received a late-pick value of 260. Draft pick makes this a **post-draft development** comparison, not a tool ready for use before the draft.
 
-**Go drill speed and NFL go route speed:** Among 60 receivers, Combine go route 90th percentile speed had a positive raw rank association with NFL go route speed (rho = 0.35, unadjusted p = 0.0055). After adjustment, the estimate was 0.13 yards per second per standard deviation (95% CI -0.03 to 0.28). The confidence interval includes zero, and the association did not survive correction across the broader exploratory search (q = 0.33). Requiring at least 25 route observations retained a similar raw rank correlation, but the adjusted confidence interval still included zero. The data therefore do not show that this Combine measure adds dependable information beyond the controls.
+## What transferred
 
-Across other tested route and movement combinations, no relationship provided consistent evidence after accounting for uncertainty and the number of comparisons. The figure below shows selected raw patterns, which should be read alongside the uncertainty and sensitivity results above.
+The raw player-level correlation between Combine drill speed and rookie NFL go-route speed was **ρ = 0.45**. In the 2025 class, which was predicted using the 2023 and 2024 classes, adding sensor speed lowered route-speed root mean squared error (RMSE) from **0.433 to 0.354 yd/s** across 14 players. Across all three held-out classes, RMSE fell from **0.408 to 0.358 yd/s**, an improvement of about 12%. The 2024 class did not improve: its RMSE rose slightly from 0.353 to 0.358 yd/s.
 
-![Selected exploratory associations](outputs/summary_findings.png)
+That improvement remains uncertain. A paired bootstrap of the held-class predictions placed the pooled RMSE change from **-0.113 to +0.015 yd/s**; a negative change means the sensor model performed better. Because this interval includes zero, these data do not establish a dependable gain. The bootstrap keeps the fitted models fixed, so it does not capture all uncertainty from selecting and fitting a model on small draft classes.
 
-## Limitations
+For **separation**, the same sensor feature added almost nothing: pooled RMSE changed from **0.433 to 0.431 yd**, with a paired interval for the change from **-0.019 to +0.015 yd**. The Combine drill may reflect usable running speed, but this sensor measure did not meaningfully improve our prediction of separation at pass release.
 
-The player samples are small, and many players have different numbers of route observations. Averaging reduces noise but does not make the averages equally reliable. Players from the 2025 draft class have one observed season, while earlier classes may have two. Missing draft selections were assigned a late-pick value for adjustment, which is a practical modeling choice rather than observed draft information. The Combine metrics are reconstructed from sensor tracks and are not official timings. Route labels do not guarantee identical paths, coverage, or game situations. The design is observational and cannot establish causation. This work has not been validated for player evaluation.
+![Combine go-drill speed, held-class rookie go-route speed errors, and separation errors](figures/go_route_transfer.png)
 
-## Next step
+## Football context and practical use
 
-For a stronger follow-up, define route geometry from tracking rather than route names alone, quantify each player's uncertainty using play-level resampling, and validate candidate relationships on a later draft class held out from feature selection. Until then, the most defensible result is that this dataset and sample do not yet establish a stable Combine-to-NFL movement relationship.
+The raw movement relationship appears in both coverage groups: among primary-sample players with at least five routes in that group, Spearman ρ was **0.45 for man coverage** (47 players) and **0.40 for zone coverage** (54 players). Those are descriptive checks, not proof that the relation is independent of coverage or play design.
 
-## Reproducibility
+A team could pilot this as a weekly **speed translation check** after drafting a receiver. Once enough go routes have been tracked, compare his cumulative observed route speed with the model's rough expectation from his Combine go-drill speed, 40 time, and draft position. The notebook produces such a table for the 2025 class after each player's tenth tracked go route. A notable gap would prompt video review of route depth, coverage, alignment, target timing, and assignment. It would not by itself imply a coaching problem, a player limitation, or poor separation skill. The current model is too uncertain to set a player-specific pass/fail threshold.
 
-Run `python src/analyze_wr.py` after attaching the Kaggle competition data. The accompanying notebook contains the same analysis pipeline. Generated tables include raw correlations, adjusted estimates, confidence intervals, multiple comparison summaries, and sensitivity checks. Data files are not included in this project.
+## Limits and next validation
+
+The sample is small and includes only rookies with enough recorded go routes, so it may exclude players who seldom get opportunities. A `GO` label does not guarantee identical route geometry, and pass release may occur before a route is complete. Coverage, offensive scheme, game situation, and quarterback behavior can change route speed and separation. The feature was selected after a broader exploratory search, so the draft-class checks are useful stress tests but not untouched external validation. None of the associations establishes causation.
+
+The next test is to lock this one feature and model, then evaluate it on a later draft class without revising the definition. A stronger version would also compare matched route depth and coverage at the play level, and attach uncertainty to each player's weekly speed estimate.
+
+The full [Jupyter notebook](https://github.com/KhodorRifaii/NFL-Big-Data-Bowl-2027/blob/main/notebooks/go_route_transfer.ipynb) contains the feature construction, tracking joins, class-held-out predictions, audit counts, and figure code. The competition data are attached at runtime and are not redistributed here.
